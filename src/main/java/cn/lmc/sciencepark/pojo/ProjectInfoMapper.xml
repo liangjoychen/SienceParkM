@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   
+    "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.lmc.sciencepark.dao.ProjectInfoDao">
+	<select id="getProjectList" resultType="cn.lmc.sciencepark.pojo.ProjectListInfo">
+		SELECT id, name, headerimg, rating_score, is_great, type, phone, lat, lng, city_id FROM ahshop_project_details
+		where city_id = #{0} and type = #{2} order by ${1} desc
+	</select>
+	
+	<select id="isProjectExist" parameterType="Integer" resultType="Integer">
+		SELECT COUNT(id)
+		FROM ahshop_project_details WHERE id = #{id}
+	</select>
+	<select id="isSubProjectExist" parameterType="Integer" resultType="Integer">
+		SELECT COUNT(id)
+		FROM ahshop_subproject_details WHERE id = #{id}
+	</select>
+	<select id="isActivityExist" parameterType="Integer" resultType="Integer">
+		SELECT COUNT(id)
+		FROM ahshop_activity_details WHERE id = #{id}
+	</select>
+	
+	<select id="countSubProjectByRenqi" parameterType="Integer" resultType="Integer">
+		SELECT COUNT(id)
+		FROM ahshop_subproject_details WHERE project_id = #{project_id} and renqi_islunbo = 2
+	</select>
+	
+	<select id="getProjectImageInfo" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.ProjectImageInfo">
+		SELECT id, image_url
+		FROM ahshop_allproject_images WHERE pid = #{pid} and type = 2
+	</select>
+	
+	<select id="getSubProjectImageInfo" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.ProjectImageInfo">
+		SELECT id as id, headerimg as image_url
+		FROM ahshop_subproject_details WHERE project_id = #{pid} and renqi_islunbo = 0
+	</select>
+	
+	<select id="getProjectDetailInfo" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.ProjectDetailInfo">
+		SELECT id,name,address,phone,details_description,timedate_description,timeday_description,price_description,rating_score,lat,lng
+		FROM ahshop_project_details WHERE id = #{id}
+	</select>
+	
+	<select id="getProjectCollectInfo" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.ProjectDetailInfo">
+		SELECT collection_number
+		FROM ahshop_project_details WHERE id = #{id}
+	</select>
+	
+	<select id="isProjectCollected" resultType="Integer">
+		SELECT COUNT(id)
+		FROM ahshop_my_collection WHERE pid = #{0} and user_id = #{1} and type = 1
+	</select>
+	
+	<select id="getTopicInfo" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.SubProjectInfo">
+		SELECT id,name,headerimg,details_description 
+		FROM ahshop_subproject_details WHERE project_id = #{pid} and type = 1 and suoshuzhuzhan_pid = 0
+	</select>
+	
+	<select id="getTemporaryInfo" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.SubProjectInfo">
+		SELECT id,name,headerimg,is_great 
+		FROM ahshop_subproject_details WHERE project_id = #{pid} and type = 2
+	</select>
+	
+	<select id="getGoodReviewInfo" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.GoodReviewInfo">
+		SELECT c.id AS id, u.id AS user_id, u.`name` AS user_name, u.user_img AS user_img, c.comment_title AS comment_title, c.comment_description AS comment_description, c.rating_score AS rating_score, c.created AS created 
+		FROM ahshop_comment c 
+		LEFT JOIN ahshop_user u ON c.user_id = u.id 
+		WHERE c.pid = #{pid} AND c.type = 1 AND c.pcomment_id = 0 
+		ORDER BY created DESC
+	</select>
+	
+	<select id="getPopularInfo" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.SubProjectInfo">
+		SELECT id,name,headerimg,praise_number,type 
+		FROM ahshop_subproject_details WHERE project_id = #{pid} and type = 1 and zhuzhanzilei_type = 1 and is_renqi = 0
+		order by reply_number desc
+	</select>
+	
+	<update id="updateCollectionNum" >
+		UPDATE ahshop_project_details SET collection_number = #{1} WHERE id = #{0}
+	</update>
+	
+	<select id="getProjectCommentList" resultType="cn.lmc.sciencepark.pojo.ProjectCommentListInfo">
+		SELECT c.id AS id, u.id AS user_id, u.`name` AS user_name, u.user_img AS user_img, c.comment_title AS comment_title, c.comment_description AS comment_description,
+		c.share_number AS share_number, c.praise_number AS praise_number, c.reply_number AS reply_number, c.rating_score AS rating_score,
+		c.type AS type, c.created AS created
+		FROM ahshop_comment c LEFT JOIN ahshop_user u ON c.user_id = u.id WHERE c.pid = 23 AND c.type = 1 and c.pcomment_id = 0 order by c.created desc limit 5
+	</select>
+	
+	<select id="getTemporatyListInfo" resultType="cn.lmc.sciencepark.pojo.SubProjectInfo">
+		select id, name, headerimg, praise_number, is_great from ahshop_subproject_details 
+		where project_id = #{0} and linzhan_type = #{1} and type = 2
+	</select>
+	
+	<select id="getSubProjectCollectInfo" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.SubProjectInfo">
+		SELECT collection_number,type,suoshuzhuzhan_pid
+		FROM ahshop_subproject_details WHERE id = #{id}
+	</select>
+	
+	<select id="getSubCollectNum" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.SubProjectInfo">
+		SELECT collection_number
+		FROM ahshop_subproject_details WHERE id = #{id}
+	</select>
+	
+	<update id="updateSubCollectionNum" >
+		UPDATE ahshop_subproject_details SET collection_number = #{1} WHERE id = #{0}
+	</update>
+</mapper>

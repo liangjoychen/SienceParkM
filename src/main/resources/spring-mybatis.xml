@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans    
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                        http://www.springframework.org/schema/context    
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd    
+                        http://www.springframework.org/schema/mvc    
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+	<!-- 自动扫描 -->
+	<context:component-scan base-package="com.cn.hnust" />
+	<!-- 引入配置文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:mysql.properties" />
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="${initialSize}"></property>
+		<!-- 连接池最大数量 -->
+		<property name="maxActive" value="${maxActive}"></property>
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="${maxIdle}"></property>
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="${minIdle}"></property>
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="${maxWait}"></property>
+	</bean>
+
+	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 自动扫描mapping.xml文件 -->
+		<property name="mapperLocations" value="classpath:cn/lmc/sciencepark/pojo/*.xml"></property>
+	</bean>
+
+	<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	 <bean id="userinfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">  
+        <property name="mapperInterface" value="cn.lmc.sciencepark.dao.UserInfoDao"></property>  
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean> 
+     <bean id="integralinfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">  
+        <property name="mapperInterface" value="cn.lmc.sciencepark.dao.IntegralInfoDao"></property>  
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="scorerulesinfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">  
+        <property name="mapperInterface" value="cn.lmc.sciencepark.dao.ScoreRulesInfoDao"></property>  
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="smscodeinfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">  
+        <property name="mapperInterface" value="cn.lmc.sciencepark.dao.SMSCodeInfoDao"></property>  
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="userbehaviourinfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">  
+        <property name="mapperInterface" value="cn.lmc.sciencepark.dao.UserBehaviourInfoDao"></property>  
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="projectinfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">  
+        <property name="mapperInterface" value="cn.lmc.sciencepark.dao.ProjectInfoDao"></property>  
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean> 
+  
+    <bean id="userinfoService" class="cn.lmc.sciencepark.service.imp.UserInfoServiceImp">  
+        <property name="userinfoDao" ref="userinfoDao"></property>  
+    </bean> 
+     <bean id="integralinfoService" class="cn.lmc.sciencepark.service.imp.IntegralInfoServiceImp">  
+        <property name="integralinfoDao" ref="integralinfoDao"></property>  
+    </bean>
+    <bean id="scorerulesinfoService" class="cn.lmc.sciencepark.service.imp.ScoreRulesInfoServiceImp">  
+        <property name="scorerulesinfoDao" ref="scorerulesinfoDao"></property>  
+    </bean>
+    <bean id="smscodeinfoService" class="cn.lmc.sciencepark.service.imp.SMSCodeInfoServiceImp">  
+        <property name="smscodeinfoDao" ref="smscodeinfoDao"></property>  
+    </bean>
+    <bean id="userbehaviourinfoService" class="cn.lmc.sciencepark.service.imp.UserBehaviourInfoServiceImp">  
+        <property name="userbehaviourinfoDao" ref="userbehaviourinfoDao"></property>  
+    </bean>
+    <bean id="projectinfoService" class="cn.lmc.sciencepark.service.imp.ProjectInfoServiceImp">  
+        <property name="projectinfoDao" ref="projectinfoDao"></property>  
+    </bean>
+</beans>  

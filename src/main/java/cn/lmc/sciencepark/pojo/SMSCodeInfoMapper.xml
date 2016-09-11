@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   
+    "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.lmc.sciencepark.dao.SMSCodeInfoDao">
+	<select id="isSMSCodeusable" resultType="Integer">
+		SELECT COUNT(id)
+		FROM ahshop_smscode WHERE smscode = #{0} AND mobile = #{1} AND type = #{2}
+	</select>
+	
+	 <delete id="delSMSCode">
+        delete from ahshop_smscode where smscode = #{0} AND mobile = #{1} AND type = #{2}
+    </delete>
+    
+    <insert id="saveSMSCodeInfo" parameterType="Map">
+		INSERT INTO
+		${tableName} (smscode, mobile, isused, addtime, type) VALUES
+		(#{smscode}, #{mobile}, #{isused}, #{addtime}, #{type})
+	</insert>
+</mapper>

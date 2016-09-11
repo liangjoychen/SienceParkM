@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   
+    "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.lmc.sciencepark.dao.UserInfoDao">
+	<select id="getUserInfoByID" parameterType="Integer" resultType="cn.lmc.sciencepark.pojo.UserInfo">
+		SELECT id, name, user_img, mobile, scores, signtime, site_signtime, site_signtime
+		FROM ahshop_user WHERE id = #{id} LIMIT 0,1
+	</select>
+	
+	<select id="isUserExist" parameterType="Map" resultType="Integer">
+		SELECT COUNT(id)
+		FROM ahshop_user WHERE ${paraName} = #{paraValue}
+	</select>
+	
+	<select id="isOldPasswordRight" resultType="Integer">
+		SELECT COUNT(id)
+		FROM ahshop_user WHERE id = #{0} AND password = #{1}
+	</select>
+	
+	<select id="isUserlegal" parameterType="Map" resultType="cn.lmc.sciencepark.pojo.UserInfo">
+		SELECT id, status
+		FROM ahshop_user WHERE ${paraName} = #{paraValue} AND password = #{password}
+	</select>
+	
+	<insert id="saveUserInfo" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		${tableName} (name, mobile, login_type, password,scores, created, updated) VALUES
+		(#{name},#{mobile}, #{login_type},#{password}, #{scores}, #{created}, #{updated})
+	</insert>
+	
+	<update id="updateOneParam" parameterType="Map">
+		UPDATE ahshop_user SET ${mparaName} = #{mparaValue} WHERE ${paraName} = #{paraValue}
+	</update>
+</mapper>

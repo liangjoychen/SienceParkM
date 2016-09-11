@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   
+    "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.lmc.sciencepark.dao.UserBehaviourInfoDao">
+	<select id="getMyProjectCollectionInfo" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserBehaviourBaseInfo">
+		SELECT c.id AS id, c.pid AS project_id, p.`name` as `name`,
+		p.headerimg AS headerimg, p.created AS created, c.type AS type FROM
+		ahshop_my_collection c LEFT JOIN ahshop_project_details p ON c.pid =
+		p.id WHERE c.user_id = #{user_id} AND c.type = 1  ORDER BY c.updated DESC
+	</select>
+
+	<select id="getMySubProjectCollectionInfo" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserBehaviourBaseInfo">
+		SELECT c.id AS id, c.pid AS project_id, p.`name` as `name`,
+		p.headerimg AS headerimg, p.created AS created, c.type AS type FROM
+		ahshop_my_collection c LEFT JOIN ahshop_subproject_details p ON c.pid
+		=
+		p.id WHERE c.user_id = #{user_id} AND (c.type = 2 OR c.type = 3 OR
+		c.type = 4)  ORDER BY c.updated DESC
+	</select>
+
+	<select id="getMyActivityCollectionInfo" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserBehaviourBaseInfo">
+		SELECT c.id AS id, c.pid AS project_id, p.`name` as `name`,
+		p.headerimg AS headerimg, p.created AS created, c.type AS type FROM
+		ahshop_my_collection c LEFT JOIN ahshop_activity_details p ON c.pid =
+		p.id WHERE c.user_id = #{user_id} AND c.type = 5  ORDER BY c.updated DESC
+	</select>
+
+	<select id="getMyProjectCommentInfoList" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserBehaviourBaseInfo">
+		SELECT c.id AS id, c.pid AS project_id, p.`name` as `name`,
+		p.headerimg AS headerimg, p.created AS created, c.type AS type FROM
+		ahshop_comment c LEFT JOIN ahshop_project_details p ON c.pid =
+		p.id
+		WHERE c.user_id = #{user_id} AND c.type = 1  ORDER BY c.updated DESC
+	</select>
+
+	<select id="getMySubProjectCommentInfoList" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserBehaviourBaseInfo">
+		SELECT c.id AS id, c.pid AS project_id, p.`name` as `name`,
+		p.headerimg AS headerimg, p.created AS created, c.type AS type FROM
+		ahshop_comment c LEFT JOIN ahshop_subproject_details p ON c.pid =
+		p.id
+		WHERE c.user_id = #{user_id} AND (c.type = 2 OR c.type = 3 OR c.type =
+		5)  ORDER BY c.updated DESC
+	</select>
+
+	<select id="getMyActivityCommentInfoList" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserBehaviourBaseInfo">
+		SELECT c.id AS id, c.pid AS project_id, p.`name` as `name`,
+		p.headerimg AS headerimg, p.created AS created, c.type AS type FROM
+		ahshop_comment c LEFT JOIN ahshop_activity_details p ON c.pid =
+		p.id
+		WHERE c.user_id = #{user_id} AND c.type = 4  ORDER BY c.updated DESC
+	</select>
+	
+	<select id="getMyProjectRecordInfo" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserBehaviourBaseInfo">
+		SELECT c.id AS id, c.project_id AS project_id, p.`name` as `name`,
+		p.headerimg AS headerimg, p.created AS created, c.type AS type FROM
+		ahshop_browse_record c LEFT JOIN ahshop_project_details p ON c.project_id =
+		p.id WHERE c.user_id = #{user_id} AND c.type = 1  ORDER BY c.updated DESC
+	</select>
+
+	<select id="getMySubProjectRecordInfo" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserBehaviourBaseInfo">
+		SELECT c.id AS id, c.project_id AS project_id, p.`name` as `name`,
+		p.headerimg AS headerimg, p.created AS created, c.type AS type FROM
+		ahshop_browse_record c LEFT JOIN ahshop_subproject_details p ON c.project_id
+		=
+		p.id WHERE c.user_id = #{user_id} AND (c.type = 2 OR c.type = 3 OR
+		c.type = 4)  ORDER BY c.updated DESC
+	</select>
+
+	<select id="getMyActivityRecordInfo" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserBehaviourBaseInfo">
+		SELECT c.id AS id, c.project_id AS project_id, p.`name` as `name`,
+		p.headerimg AS headerimg, p.created AS created, c.type AS type FROM
+		ahshop_browse_record c LEFT JOIN ahshop_activity_details p ON c.project_id =
+		p.id WHERE c.user_id = #{user_id} AND c.type = 5  ORDER BY c.updated DESC
+	</select>
+
+	<select id="getMySignUpInfo" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserSignUpInfo">
+		SELECT c.id AS id, p.`name` AS `name`, p.headerimg AS
+		headerimg, p.timedate_description AS timedate_description,
+		p.timeday_description AS timeday_description, p.address AS address,
+		c.all_info AS all_info, c.created AS created FROM
+		ahshop_activity_baoming c LEFT JOIN ahshop_activity_details p ON
+		c.activity_id = p.id WHERE c.user_id = #{user_id}  ORDER BY c.updated DESC
+	</select>
+	
+	<select id="getMySignInInfo" parameterType="Integer"
+		resultType="cn.lmc.sciencepark.pojo.UserInfo">
+		SELECT scores, signtime, site_signtime, signscore, continuousdays FROM ahshop_user WHERE id = #{user_id}
+	</select>
+	
+	<select id="isProjectParse" resultType="Integer">
+		SELECT COUNT(id) FROM ahshop_my_praise WHERE user_id = #{0} and pid = #{1} and type = #{2}
+	</select>
+	
+	<update id="updateFirstSignInInfo" parameterType="Map">
+		UPDATE ahshop_user SET site_signtime = #{site_signtime}, scores = #{scores} WHERE id = #{user_id}
+	</update>
+	
+	<update id="updateSeriesSignInInfo" parameterType="Map">
+		UPDATE ahshop_user SET signtime = #{signtime}, scores = #{scores}, continuousdays = continuousdays + 1, allsign_number = allsign_number +1 WHERE id = #{user_id}
+	</update>
+	
+	<insert id="saveUserFeedBack" parameterType="Map">
+		INSERT INTO
+		ahshop_user_feedback (user_id, content, email) VALUES
+		(#{user_id},#{content}, #{email})
+	</insert>
+	
+	<delete id="delMyCollectionInfo">
+		DELETE FROM
+		ahshop_my_collection WHERE user_id = #{user_id} AND id in
+		<foreach item="item" index="index" collection="cids" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<delete id="delMySignUpInfo">
+		DELETE FROM
+		ahshop_activity_baoming WHERE user_id = #{user_id} AND id in
+		<foreach item="item" index="index" collection="sids" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<delete id="delMyCommentInfo">
+		DELETE FROM
+		ahshop_comment WHERE user_id = #{user_id} AND id in
+		<foreach item="item" index="index" collection="cids" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<delete id="delMyRecordInfo">
+		DELETE FROM
+		ahshop_browse_record WHERE user_id = #{user_id} AND id in
+		<foreach item="item" index="index" collection="rids" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<insert id="saveMyRecordInfo" parameterType="Map">
+		INSERT INTO
+		ahshop_browse_record (user_id, project_id, type, created, updated) VALUES
+		(#{user_id},#{project_id}, #{type}, #{created}, #{updated})
+	</insert>
+	
+	<select id="isMyRecordInfoExist" resultType="Integer">
+		SELECT COUNT(id) FROM ahshop_browse_record WHERE user_id = #{0} and project_id = #{1} and type = #{2}
+	</select>
+	
+	<update id="updateMyRecodInfo" parameterType="Map">
+		UPDATE ahshop_browse_record SET updated = #{3} WHERE user_id = #{0} and project_id = #{1} and type = #{2}
+	</update>
+	
+	<select id="isMyCollectionExist" resultType="Integer">
+		SELECT COUNT(id) FROM ahshop_my_collection WHERE user_id = #{0} and pid = #{1} and type = #{2}
+	</select>
+	
+	<delete id="delMySingleCollection">
+		DELETE FROM
+		ahshop_my_collection WHERE user_id = #{0} and pid = #{1} and type = #{2}
+	</delete>
+	
+	<insert id="saveMyCollection" parameterType="Map">
+		INSERT INTO
+		ahshop_my_collection (user_id, pid, type, created, updated) VALUES
+		(#{user_id},#{pid}, #{type}, #{created}, #{updated})
+	</insert>
+</mapper>
